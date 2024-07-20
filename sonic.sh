@@ -39,28 +39,28 @@ echo
 echo -e "${BOLD_BLUE}Creating the Node.js script file${NC}"
 echo
 cat << EOF > zun.mjs
-import web3 from "@solana/web3.js";
+import { Connection, Keypair, Transaction, SystemProgram, LAMPORTS_PER_SOL, sendAndConfirmTransaction } from "@solana/web3.js";
 import chalk from "chalk";
 import bs58 from "bs58";
 
-const connection = new web3.Connection("https://api.devnet.solana.com", 'confirmed');
+const connection = new Connection("https://api.devnet.solana.com", 'confirmed');
 
 const privkey = "$privkey";
-const from = web3.Keypair.fromSecretKey(bs58.decode(privkey));
-const to = web3.Keypair.generate();
+const from = Keypair.fromSecretKey(bs58.decode(privkey));
+const to = Keypair.generate();
 
 (async () => {
     try {
         for (let i = 0; i < 100; i++) {
-            const transaction = new web3.Transaction().add(
-                web3.SystemProgram.transfer({
+            const transaction = new Transaction().add(
+                SystemProgram.transfer({
                     fromPubkey: from.publicKey,
                     toPubkey: to.publicKey,
-                    lamports: web3.LAMPORTS_PER_SOL * 0.001,
+                    lamports: LAMPORTS_PER_SOL * 0.001,
                 })
             );
 
-            const signature = await web3.sendAndConfirmTransaction(connection, transaction, [from]);
+            const signature = await sendAndConfirmTransaction(connection, transaction, [from]);
             console.log(chalk.blue('Tx hash :'), signature);
 
             const randomDelay = Math.floor(Math.random() * 3) + 1;
