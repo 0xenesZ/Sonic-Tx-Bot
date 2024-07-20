@@ -47,11 +47,11 @@ const connection = new Connection("https://api.devnet.solana.com", 'confirmed');
 
 const privkey = "$privkey";
 const from = Keypair.fromSecretKey(bs58.decode(privkey));
-const to = Keypair.generate();
 
 (async () => {
     try {
         for (let i = 0; i < 100; i++) {
+            const to = Keypair.generate();
             const transaction = new Transaction().add(
                 SystemProgram.transfer({
                     fromPubkey: from.publicKey,
