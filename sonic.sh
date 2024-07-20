@@ -39,7 +39,7 @@ echo
 echo -e "${BOLD_BLUE}Creating the Node.js script file${NC}"
 echo
 cat << EOF > zun.mjs
-import { Connection, Keypair, Transaction, SystemProgram, LAMPORTS_PER_SOL, sendAndConfirmTransaction } from "@solana/web3.js";
+import { Connection, Keypair, Transaction, SystemProgram, LAMPORTS_PER_SOL, sendAndConfirmTransaction, Commitment } from "@solana/web3.js";
 import chalk from "chalk";
 import bs58 from "bs58";
 
@@ -60,7 +60,16 @@ const from = Keypair.fromSecretKey(bs58.decode(privkey));
                 })
             );
 
-            const signature = await sendAndConfirmTransaction(connection, transaction, [from]);
+            const signature = await sendAndConfirmTransaction(
+                connection,
+                transaction,
+                [from],
+                {
+                    commitment: 'confirmed',
+                    preflightCommitment: 'processed',
+                    skipPreflight: false
+                }
+            );
             console.log(chalk.blue('Tx hash :'), signature);
 
             const randomDelay = Math.floor(Math.random() * 3) + 1;
